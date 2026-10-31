@@ -99,16 +99,35 @@ const jsonLd = [organization, ...schema];
 
     <meta name="theme-color" content="#51a5db" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0f1418" media="(prefers-color-scheme: dark)" />
-    <!-- Apply a saved theme choice before first paint (no flash of the wrong theme). -->
+    <!--
+      Theme bootstrap: applies the saved choice before first paint (no flash of the wrong theme),
+      and re-applies it when a page is restored from the back/forward cache or changed in another tab
+      (otherwise "Back" shows a page frozen in the old theme).
+    -->
     <script is:inline>
-      try {
-        const theme = localStorage.getItem('theme');
-        if (theme === 'light' || theme === 'dark') {
-          document.documentElement.dataset.theme = theme;
-          const color = theme === 'dark' ? '#0f1418' : '#51a5db';
-          document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute('content', color));
-        }
-      } catch {}
+      (() => {
+        const root = document.documentElement;
+        const read = () => {
+          try {
+            const theme = localStorage.getItem('theme');
+            return theme === 'light' || theme === 'dark' ? theme : null;
+          } catch {
+            return null;
+          }
+        };
+        const apply = (theme = read()) => {
+          if (theme) root.dataset.theme = theme;
+          else delete root.dataset.theme;
+          document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
+            const dark = theme ? theme === 'dark' : meta.media.includes('dark');
+            meta.setAttribute('content', dark ? '#0f1418' : '#51a5db');
+          });
+        };
+        window.applyTheme = apply;
+        apply();
+        addEventListener('pageshow', (e) => e.persisted && apply());
+        addEventListener('storage', (e) => e.key === 'theme' && apply());
+      })();
     </script>
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />

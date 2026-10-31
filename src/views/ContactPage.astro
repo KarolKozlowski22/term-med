@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import MapEmbed from '../components/MapEmbed.astro';
+import ContactIcon from '../components/ContactIcon.astro';
 import { site } from '../config/site';
 import { routes, t, type Lang } from '../i18n/ui';
 import { absoluteUrl } from '../utils/url';
@@ -11,6 +12,7 @@ const { lang } = Astro.props;
 const i18n = t(lang);
 const page = i18n.contactPage;
 const { contact } = site;
+const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact.mapQuery)}`;
 const mailto = (email: string) => `mailto:${email}?subject=${encodeURIComponent(i18n.mailSubject)}`;
 
 const breadcrumbs = {
@@ -34,23 +36,35 @@ const breadcrumbs = {
         <div class="card contact__list">
           <div class="contact__item">
             <span class="eyebrow">{page.phone}</span>
-            <a href={`tel:${contact.phoneHref}`} class="contact__big">{contact.phone}</a>
+            <a href={`tel:${contact.phoneHref}`} class="contact__link">
+              <ContactIcon name="phone" />
+              <span class="contact__big">{contact.phone}</span>
+            </a>
           </div>
           <div class="contact__item">
             <span class="eyebrow">{page.sales}</span>
-            <a href={mailto(contact.salesEmail)} class="contact__big">{contact.salesEmail}</a>
+            <a href={mailto(contact.salesEmail)} class="contact__link">
+              <ContactIcon name="mail" />
+              <span class="contact__big">{contact.salesEmail}</span>
+            </a>
           </div>
           <div class="contact__item">
             <span class="eyebrow">{page.info}</span>
-            <a href={mailto(contact.infoEmail)} class="contact__big">{contact.infoEmail}</a>
+            <a href={mailto(contact.infoEmail)} class="contact__link">
+              <ContactIcon name="mail" />
+              <span class="contact__big">{contact.infoEmail}</span>
+            </a>
           </div>
           <div class="contact__item">
             <span class="eyebrow">{page.address}</span>
-            <address>
-              {site.legalName}<br />
-              {contact.street}<br />
-              {contact.postalCode} {contact.city}, {page.country}
-            </address>
+            <a href={mapsLink} class="contact__link" target="_blank" rel="noopener">
+              <ContactIcon name="pin" />
+              <address>
+                {site.legalName}<br />
+                {contact.street}<br />
+                {contact.postalCode} {contact.city}, {page.country}
+              </address>
+            </a>
           </div>
         </div>
 
@@ -65,7 +79,9 @@ const breadcrumbs = {
   .contact { align-items: stretch; }
   .contact__list { display: grid; gap: 28px; align-content: start; }
   .contact__item .eyebrow { display: block; margin-bottom: 0.25rem; }
-  .contact__item address { font-style: normal; }
+  .contact__item address { font-style: normal; line-height: 1.5; }
+  .contact__link { display: inline-flex; align-items: center; gap: 16px; text-decoration: none; }
+  .contact__link:hover .contact__big { color: var(--blue-ink); }
   .contact__big {
     font-size: clamp(1.15rem, 2.4vw, 1.5rem);
     font-weight: 600;
@@ -73,5 +89,4 @@ const breadcrumbs = {
     overflow-wrap: anywhere;
     transition: color 0.2s;
   }
-  .contact__big:hover { color: var(--blue-ink); }
 </style>

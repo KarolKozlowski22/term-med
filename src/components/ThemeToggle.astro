@@ -54,21 +54,26 @@ const { lang } = Astro.props;
 </style>
 
 <script>
+  type Theme = 'light' | 'dark';
+  declare global {
+    interface Window {
+      applyTheme?: (theme?: Theme | null) => void; // defined by the inline bootstrap in BaseLayout
+    }
+  }
+
   const root = document.documentElement;
   const media = matchMedia('(prefers-color-scheme: dark)');
-  const current = () => (root.dataset.theme as 'light' | 'dark' | undefined) ?? (media.matches ? 'dark' : 'light');
+  const current = (): Theme => (root.dataset.theme as Theme | undefined) ?? (media.matches ? 'dark' : 'light');
 
   document.querySelectorAll<HTMLButtonElement>('.theme-toggle').forEach((button) => {
     button.addEventListener('click', () => {
-      const next = current() === 'dark' ? 'light' : 'dark';
-      root.dataset.theme = next;
+      const next: Theme = current() === 'dark' ? 'light' : 'dark';
       try {
         localStorage.setItem('theme', next);
       } catch {
         // Storage blocked (private mode) — the choice still applies to this page.
       }
-      const color = next === 'dark' ? '#0f1418' : '#51a5db';
-      document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute('content', color));
+      window.applyTheme?.(next);
     });
   });
 </script>
