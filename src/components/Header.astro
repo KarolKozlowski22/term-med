@@ -77,9 +77,9 @@ const links = [
     border: 1px solid var(--line);
     background:
       linear-gradient(135deg, color-mix(in srgb, var(--blue) 18%, transparent), transparent 30%),
-      color-mix(in srgb, var(--bg) 90%, transparent);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+      var(--bg);
+    /* No backdrop-filter: a blurred sticky layer over the image grid caused first-paint
+       compositing glitches in Chrome and heavy GPU load on phones. */
     box-shadow: var(--shadow);
   }
   .logo img { height: 44px; width: auto; }

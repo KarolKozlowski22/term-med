@@ -15,7 +15,7 @@
   --text-muted: #5b6168;
   --line: #e3e6ea;
   --footer-bg: #222222;
-  --photo-bg: #ffffff; /* product photos are shot on white */
+  --photo-bg: #ffffff; /* product photos are shot on white — kept white in dark mode too */
 
   --font: 'Montserrat Variable', 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
@@ -40,7 +40,6 @@
     --text-muted: #a3adb6;
     --line: #2a343d;
     --footer-bg: #0a0d10;
-    --photo-bg: #e8edf1;
     --shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
     --shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.35), 0 16px 40px rgba(0, 0, 0, 0.4);
     color-scheme: dark;
@@ -55,7 +54,6 @@
   --text-muted: #a3adb6;
   --line: #2a343d;
   --footer-bg: #0a0d10;
-  --photo-bg: #e8edf1;
   --shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
   --shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.35), 0 16px 40px rgba(0, 0, 0, 0.4);
   color-scheme: dark;

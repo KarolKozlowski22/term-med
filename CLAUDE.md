@@ -40,5 +40,10 @@ src/
   Never hard-code colors in components; use the tokens (`--surface`, `--text`, `--photo-bg`, ...).
   Filled buttons/bands use the fixed `--btn-grad` (white text in both themes).
 - MotifMarquee (scrolling icon strip in the home band) takes its labels from `marquee` in ui.ts.
+- CSS is inlined into every page (`build.inlineStylesheets: 'always'`): GitHub Pages caches HTML for
+  10 min and each deploy deletes the previous hashed CSS, so external stylesheets could leave cached
+  pages unstyled. Don't switch this back.
+- Product photos sit on white tiles (`--photo-bg`) in both themes; no `mix-blend-mode` on images and no
+  `backdrop-filter` on the sticky header / mobile bar (cheaper compositing on phones).
 - Indexing is opt-in: `INDEXABLE=true` at build time (production only).
 - Product descriptions are short and factual — verify any new claims with the client.

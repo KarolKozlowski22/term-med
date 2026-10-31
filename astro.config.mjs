@@ -8,7 +8,14 @@ export default defineConfig({
   site: process.env.SITE_URL || 'http://localhost:4321',
   base: process.env.BASE_PATH || '/',
   trailingSlash: 'ignore',
-  build: { format: 'directory' },
+  build: {
+    format: 'directory',
+    // Inline all CSS into each page. GitHub Pages caches HTML for 10 minutes while every deploy
+    // replaces the hashed CSS files, so a cached page could request a stylesheet that no longer
+    // exists and render unstyled. Inlining makes every page self-contained (and saves a
+    // render-blocking request).
+    inlineStylesheets: 'always',
+  },
   // Prefetch internal pages on hover/tap so navigation feels instant.
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
   integrations: [sitemap({ filter: (page) => !page.includes('/404') })],
