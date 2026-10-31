@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import MapEmbed from '../components/MapEmbed.astro';
-import ContactIcon from '../components/ContactIcon.astro';
+import TileIcon from '../components/TileIcon.astro';
 import { site } from '../config/site';
 import { routes, t, type Lang } from '../i18n/ui';
 import { absoluteUrl } from '../utils/url';
@@ -37,28 +37,28 @@ const breadcrumbs = {
           <div class="contact__item">
             <span class="eyebrow">{page.phone}</span>
             <a href={`tel:${contact.phoneHref}`} class="contact__link">
-              <ContactIcon name="phone" />
+              <TileIcon name="phone" />
               <span class="contact__big">{contact.phone}</span>
             </a>
           </div>
           <div class="contact__item">
             <span class="eyebrow">{page.sales}</span>
             <a href={mailto(contact.salesEmail)} class="contact__link">
-              <ContactIcon name="mail" />
+              <TileIcon name="mail" />
               <span class="contact__big">{contact.salesEmail}</span>
             </a>
           </div>
           <div class="contact__item">
             <span class="eyebrow">{page.info}</span>
             <a href={mailto(contact.infoEmail)} class="contact__link">
-              <ContactIcon name="mail" />
+              <TileIcon name="mail" />
               <span class="contact__big">{contact.infoEmail}</span>
             </a>
           </div>
           <div class="contact__item">
             <span class="eyebrow">{page.address}</span>
             <a href={mapsLink} class="contact__link" target="_blank" rel="noopener">
-              <ContactIcon name="pin" />
+              <TileIcon name="pin" />
               <address>
                 {site.legalName}<br />
                 {contact.street}<br />

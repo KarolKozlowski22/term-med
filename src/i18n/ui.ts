@@ -115,7 +115,12 @@ export const ui = {
       mapNote: 'Mapa Google ładuje się dopiero po kliknięciu.',
       openMap: 'Otwórz w Mapach Google',
     },
-    footer: { contact: 'Kontakt', links: 'Na skróty', rights: 'Wszelkie prawa zastrzeżone.' },
+    footer: {
+      contact: 'Kontakt',
+      links: 'Na skróty',
+      rights: 'Wszelkie prawa zastrzeżone.',
+      hints: { about: 'Firma od 2005 roku', offer: 'Pełny katalog', contact: 'Zapytaj o ofertę' },
+    },
     notFound: { title: 'Nie znaleziono strony', text: 'Strona, której szukasz, nie istnieje lub została przeniesiona.' },
   },
 
@@ -219,7 +224,12 @@ export const ui = {
       mapNote: 'Google Maps loads only after you click.',
       openMap: 'Open in Google Maps',
     },
-    footer: { contact: 'Contact', links: 'Quick links', rights: 'All rights reserved.' },
+    footer: {
+      contact: 'Contact',
+      links: 'Quick links',
+      rights: 'All rights reserved.',
+      hints: { about: 'In business since 2005', offer: 'Full catalogue', contact: 'Request a quote' },
+    },
     notFound: { title: 'Page not found', text: 'The page you are looking for does not exist or has been moved.' },
   },
 } as const;

@@ -1,10 +1,11 @@
 ---
 /**
- * Contact icon in a brand-gradient tile: phone, mail or pin.
- * Animates when its parent link is hovered/focused (phone rings, envelope flap opens, pin bounces).
+ * Line icon in a glossy brand-gradient tile (contact details, footer quick links).
+ * Animates when its parent link is hovered/focused: phone rings, envelope flap opens, pin bounces,
+ * building lifts, box lid pops, chat dots pulse.
  */
 interface Props {
-  name: 'phone' | 'mail' | 'pin';
+  name: 'phone' | 'mail' | 'pin' | 'building' | 'box' | 'chat';
   size?: 'sm' | 'md';
 }
 const { name, size = 'md' } = Astro.props;
@@ -17,6 +18,14 @@ const paths = {
     '<rect x="2.5" y="5" width="19" height="14" rx="2.5"/>' +
     '<path class="ci__flap" d="m3.5 6.5 8.5 6.5 8.5-6.5"/>',
   pin: '<path d="M12 21.5s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  building:
+    '<path d="M4.5 21V5.5A1.5 1.5 0 0 1 6 4h7a1.5 1.5 0 0 1 1.5 1.5V21M14.5 10H18a1.5 1.5 0 0 1 1.5 1.5V21M2.5 21h19M8 8h3M8 12h3M8 16h3M17 14v.01M17 17.5v.01"/>',
+  box:
+    '<path d="M3.5 8.5v8L12 21l8.5-4.5v-8M12 13v8"/>' +
+    '<path class="ci__lid" d="M3.5 8.5 12 4l8.5 4.5L12 13z"/>',
+  chat:
+    '<path d="M20.5 11.5a8 8 0 0 1-11.7 7.1L3.5 20l1.4-4.7a8 8 0 1 1 15.6-3.8z"/>' +
+    '<path class="ci__dot" d="M8.5 11.5h.01"/><path class="ci__dot" d="M12 11.5h.01"/><path class="ci__dot" d="M15.5 11.5h.01"/>',
 };
 ---
 
@@ -59,6 +68,8 @@ const paths = {
   }
   .ci :global(.ci__waves) { opacity: 0.55; transition: opacity 0.2s; }
   .ci :global(.ci__flap) { transform-origin: 12px 6px; transition: transform 0.3s ease; }
+  .ci :global(.ci__lid) { transition: transform 0.3s ease; }
+  .ci :global(.ci__dot) { stroke-width: 2.6; }
 
   :global(a:is(:hover, :focus-visible)) > .ci {
     transform: translateY(-2px) scale(1.05);
@@ -67,7 +78,12 @@ const paths = {
   :global(a:is(:hover, :focus-visible)) > .ci--phone svg { animation: ring 0.8s ease-in-out; }
   :global(a:is(:hover, :focus-visible)) > .ci--phone :global(.ci__waves) { opacity: 1; animation: waves 0.8s ease-in-out infinite alternate; }
   :global(a:is(:hover, :focus-visible)) > .ci--mail :global(.ci__flap) { transform: scaleY(-1) translateY(-1px); }
-  :global(a:is(:hover, :focus-visible)) > .ci--pin svg { animation: bounce 0.7s ease; }
+  :global(a:is(:hover, :focus-visible)) > .ci--pin svg,
+  :global(a:is(:hover, :focus-visible)) > .ci--building svg { animation: bounce 0.7s ease; }
+  :global(a:is(:hover, :focus-visible)) > .ci--box :global(.ci__lid) { transform: translateY(-2.5px); }
+  :global(a:is(:hover, :focus-visible)) > .ci--chat :global(.ci__dot) { animation: dot 0.9s ease-in-out infinite; }
+  :global(a:is(:hover, :focus-visible)) > .ci--chat :global(.ci__dot:nth-of-type(3)) { animation-delay: 0.15s; }
+  :global(a:is(:hover, :focus-visible)) > .ci--chat :global(.ci__dot:nth-of-type(4)) { animation-delay: 0.3s; }
 
   @keyframes ring {
     0%, 100% { transform: rotate(0); }
@@ -77,6 +93,10 @@ const paths = {
   @keyframes waves {
     from { opacity: 0.35; }
     to { opacity: 1; }
+  }
+  @keyframes dot {
+    0%, 100% { opacity: 1; transform: translateY(0); }
+    50% { opacity: 0.4; transform: translateY(-1.5px); }
   }
   @keyframes bounce {
     0%, 100% { transform: translateY(0); }

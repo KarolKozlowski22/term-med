@@ -22,7 +22,8 @@ src/
   views/              page bodies taking `lang` — HomePage, OfferPage, ContactPage
   pages/              thin routes: / /oferta /kontakt, /en/ /en/offer /en/contact, 404, robots.txt
   components/         Header, LangSwitch, Footer, MobileCTA, SectionHeading, CtaBand,
-                      ProductCard, Icon (inline Font Awesome SVGs), MapEmbed (click-to-load)
+                      ProductCard, Icon (inline Font Awesome SVGs), MapEmbed (click-to-load),
+                      TileIcon (gradient icon tiles + hover animations: contact rows, footer)
   utils/url.ts        url() / absoluteUrl() — prefix BASE_URL
 ```
 
