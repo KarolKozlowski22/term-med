@@ -5,6 +5,7 @@ import SectionHeading from '../components/SectionHeading.astro';
 import ProductCard from '../components/ProductCard.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Icon from '../components/Icon.astro';
+import MotifMarquee from '../components/MotifMarquee.astro';
 import { products } from '../config/site';
 import { routes, t, type Lang } from '../i18n/ui';
 import { url } from '../utils/url';
@@ -15,7 +16,6 @@ const i18n = t(lang);
 
 const featured = products.filter((p) => p.featured);
 const collage = featured.slice(0, 4);
-const tokens = ['briefcase-medical', 'stethoscope', 'syringe', 'vials'];
 const valueIcons = ['prescription-bottle', 'briefcase-medical', 'handshake-regular', 'stethoscope'];
 ---
 
@@ -69,13 +69,11 @@ const valueIcons = ['prescription-bottle', 'briefcase-medical', 'handshake-regul
   <section class="section band-wrap">
     <div class="container">
       <div class="band center">
-        <ul class="tokens" aria-hidden="true">
-          {tokens.map((name) => (
-            <li class="token"><Icon name={name} size={30} /></li>
-          ))}
-        </ul>
         <h2>{i18n.band.title}</h2>
         <p>{i18n.band.text}</p>
+        <div class="band__marquee">
+          <MotifMarquee lang={lang} />
+        </div>
         <a href={url(routes.offer[lang])} class="btn btn--white">{i18n.seeOffer}</a>
       </div>
     </div>
@@ -149,13 +147,13 @@ const valueIcons = ['prescription-bottle', 'briefcase-medical', 'handshake-regul
     padding: clamp(12px, 2vw, 20px);
     border-radius: var(--radius);
     border: 1px solid var(--line);
-    background: #fff;
+    background: var(--photo-bg);
     box-shadow: var(--shadow);
   }
   .collage__item:nth-child(even) { transform: translateY(clamp(12px, 3vw, 28px)); }
   .collage__item { position: relative; }
   .collage__item :global(picture) { position: absolute; inset: clamp(12px, 2vw, 20px); }
-  .collage__item :global(img) { width: 100%; height: 100%; object-fit: contain; }
+  .collage__item :global(img) { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
   .trust {
     position: absolute;
     left: 50%;
@@ -176,49 +174,18 @@ const valueIcons = ['prescription-bottle', 'briefcase-medical', 'handshake-regul
   .band {
     padding: clamp(48px, 8vw, 96px) clamp(20px, 5vw, 64px);
     border-radius: var(--radius);
-    background: linear-gradient(15deg, var(--green), 60%, var(--blue));
+    overflow: hidden;
+    background: linear-gradient(
+      15deg,
+      color-mix(in srgb, var(--green) 88%, var(--bg)),
+      60%,
+      color-mix(in srgb, var(--blue) 88%, var(--bg))
+    );
     color: #fff;
   }
   .band h2 { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18); }
-  .band p { max-width: 560px; margin: 0 auto 2rem; font-weight: 500; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18); }
-  .tokens {
-    display: flex;
-    justify-content: center;
-    gap: clamp(12px, 4vw, 40px);
-    list-style: none;
-    margin: 0 0 clamp(28px, 5vw, 48px);
-    padding: 0;
-  }
-  .token {
-    display: grid;
-    place-items: center;
-    width: clamp(60px, 10vw, 80px);
-    aspect-ratio: 1;
-    border-radius: var(--radius);
-    background: var(--surface);
-    color: var(--blue-ink);
-    box-shadow: var(--shadow);
-  }
-  .token:nth-child(even) { color: var(--green-ink); }
-
-  /* Staggered slide-in as the band scrolls into view — pure CSS, no JS (progressive enhancement). */
-  @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-      .token {
-        animation: token-in linear both;
-        animation-timeline: view();
-        animation-range: entry 10% cover 30%;
-      }
-      .token:nth-child(2) { animation-range: entry 20% cover 35%; }
-      .token:nth-child(3) { animation-range: entry 30% cover 40%; }
-      .token:nth-child(4) { animation-range: entry 40% cover 45%; }
-    }
-  }
-  @keyframes token-in {
-    from { opacity: 0; transform: translateX(-60%); }
-    to { opacity: 1; transform: none; }
-  }
-
+  .band__marquee { margin: 0 calc(-1 * clamp(20px, 5vw, 64px)) clamp(28px, 4vw, 40px); }
+  .band p { max-width: 560px; margin: 0 auto clamp(28px, 4vw, 40px); font-weight: 500; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18); }
   .value { position: relative; }
   .value__icon {
     display: inline-grid;
@@ -227,7 +194,7 @@ const valueIcons = ['prescription-bottle', 'briefcase-medical', 'handshake-regul
     height: 52px;
     margin-bottom: 18px;
     border-radius: var(--radius-sm);
-    background: var(--grad-ink);
+    background: var(--btn-grad);
     color: #fff;
   }
   .value h3 { font-style: italic; }

@@ -97,7 +97,19 @@ const jsonLd = [organization, ...schema];
     {altLangs.map((l) => <meta property="og:locale:alternate" content={t(l).locale} />)}
     <meta name="twitter:card" content="summary_large_image" />
 
-    <meta name="theme-color" content="#51a5db" />
+    <meta name="theme-color" content="#51a5db" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1418" media="(prefers-color-scheme: dark)" />
+    <!-- Apply a saved theme choice before first paint (no flash of the wrong theme). -->
+    <script is:inline>
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light' || theme === 'dark') {
+          document.documentElement.dataset.theme = theme;
+          const color = theme === 'dark' ? '#0f1418' : '#51a5db';
+          document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute('content', color));
+        }
+      } catch {}
+    </script>
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
     <link rel="manifest" href={url('/site.webmanifest')} />

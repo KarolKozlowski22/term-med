@@ -33,5 +33,11 @@ src/
 - Copy lives in `src/i18n/ui.ts`, never hard-coded in markup. Both languages must stay in sync.
 - Brand colors (`--blue`, `--green`) are for backgrounds/borders/icons only; text and buttons use
   the darker `--blue-ink` / `--green-ink` (WCAG AA contrast).
+- Dark mode: follows the OS, overridable via ThemeToggle (saved in localStorage, applied pre-paint by an
+  inline script in BaseLayout). Dark values live in `global.css` twice — under the
+  `prefers-color-scheme` media query and `:root[data-theme='dark']` — keep both blocks in sync.
+  Never hard-code colors in components; use the tokens (`--surface`, `--text`, `--photo-bg`, ...).
+  Filled buttons/bands use the fixed `--btn-grad` (white text in both themes).
+- MotifMarquee (scrolling icon strip in the home band) takes its labels from `marquee` in ui.ts.
 - Indexing is opt-in: `INDEXABLE=true` at build time (production only).
 - Product descriptions are short and factual — verify any new claims with the client.

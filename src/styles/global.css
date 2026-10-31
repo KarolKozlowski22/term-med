@@ -2,17 +2,20 @@
 :root {
   --blue: #51a5db; /* logo blue — backgrounds, borders, icons */
   --green: #69c292; /* logo green — backgrounds, borders, icons */
-  --blue-ink: #2a7ab0; /* text-safe shades (WCAG AA on white) */
+  --blue-ink: #2a7ab0; /* accent text — WCAG AA on the page background */
   --green-ink: #2b8255;
   --grad: linear-gradient(135deg, var(--blue), var(--green));
-  --grad-ink: linear-gradient(135deg, var(--blue-ink), var(--green-ink));
+  --grad-ink: linear-gradient(135deg, var(--blue-ink), var(--green-ink)); /* gradient text */
+  /* Filled buttons/bands carry white text, so they keep the dark shades in both themes. */
+  --btn-grad: linear-gradient(135deg, #2a7ab0, #2b8255);
 
   --bg: #fffdfa;
   --surface: #ffffff;
   --text: #222222;
   --text-muted: #5b6168;
   --line: #e3e6ea;
-  --dark: #222222;
+  --footer-bg: #222222;
+  --photo-bg: #ffffff; /* product photos are shot on white */
 
   --font: 'Montserrat Variable', 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
@@ -22,6 +25,40 @@
   --shadow: 0 2px 4px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(34, 34, 34, 0.06);
   --shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.08), 0 16px 40px rgba(42, 122, 176, 0.14);
   --header-h: 88px;
+
+  color-scheme: light;
+}
+
+/* ===== Dark theme: follows the OS unless the visitor picked a theme (data-theme on <html>) ===== */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --blue-ink: #6dbae9;
+    --green-ink: #7dd0a3;
+    --bg: #0f1418;
+    --surface: #171e24;
+    --text: #e8ecef;
+    --text-muted: #a3adb6;
+    --line: #2a343d;
+    --footer-bg: #0a0d10;
+    --photo-bg: #e8edf1;
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+    --shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.35), 0 16px 40px rgba(0, 0, 0, 0.4);
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --blue-ink: #6dbae9;
+  --green-ink: #7dd0a3;
+  --bg: #0f1418;
+  --surface: #171e24;
+  --text: #e8ecef;
+  --text-muted: #a3adb6;
+  --line: #2a343d;
+  --footer-bg: #0a0d10;
+  --photo-bg: #e8edf1;
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+  --shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.35), 0 16px 40px rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
 }
 
 *,
@@ -112,7 +149,7 @@ p { margin: 0 0 1em; }
   padding: 0.8em 1.8em;
   border: 2px solid transparent;
   border-radius: var(--radius);
-  background: var(--grad-ink) border-box;
+  background: var(--btn-grad) border-box;
   color: #fff;
   font: inherit;
   font-weight: 700;
@@ -150,7 +187,7 @@ p { margin: 0 0 1em; }
 .skip-link {
   position: absolute; left: 16px; top: -100px; z-index: 100;
   padding: 10px 16px; border-radius: var(--radius-sm);
-  background: var(--dark); color: #fff; text-decoration: none;
+  background: var(--text); color: var(--bg); text-decoration: none;
 }
 .skip-link:focus { top: 16px; }
 

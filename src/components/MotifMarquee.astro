@@ -1,0 +1,119 @@
+---
+/**
+ * Endless, slowly scrolling strip of medical motifs (line icons + product-range words).
+ * Pure CSS animation; pauses on hover and stops for prefers-reduced-motion.
+ */
+import { t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  reverse?: boolean;
+}
+const { lang, reverse = false } = Astro.props;
+const items = t(lang).marquee;
+
+// 24×24 line icons, drawn with currentColor strokes.
+const icons: Record<string, string> = {
+  syringe:
+    '<path d="m18 2 4 4M20 4l-4 4M16 4l4 4M17.5 6.5 8 16l-2.5.5L6 14l9.5-9.5M9 11l1.5 1.5M11.5 8.5 13 10M6 18l-4 4"/>',
+  needle: '<path d="M3 21 14 10M14 10l3.5-3.5M15.5 5l3.5 3.5M18 3l3 3M13 8.5l2.5 2.5"/>',
+  infusion:
+    '<path d="M8 2h8v8.5a4 4 0 0 1-8 0z"/><path d="M8 6h3M8 9h3M12 14.5V18M12 18c0 2.2 1.8 4 4 4h2"/>',
+  cannula:
+    '<path d="m3 21 6-6"/><path d="m8 12 4 4-2 2-4-4z"/><path d="m11 13 4-4M13 7l4 4M15 9l6-6M18 3h3v3"/>',
+  bag: '<path d="M6 4h12v10a6 6 0 0 1-12 0z"/><path d="M6 8h12M10 2h4M12 20v2.5"/>',
+  spatula: '<rect x="9" y="1.5" width="6" height="21" rx="3" transform="rotate(35 12 12)"/>',
+  baby:
+    '<circle cx="12" cy="9" r="5"/><path d="M10 8.5h.01M14 8.5h.01M10.5 11a2 2 0 0 0 3 0M6 21.5c1-3 3.4-4.5 6-4.5s5 1.5 6 4.5"/>',
+  snowflake:
+    '<path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9.5 3.5 12 6l2.5-2.5M9.5 20.5 12 18l2.5 2.5"/>',
+  truck:
+    '<path d="M2 6h11v10H2zM13 9h4l4 4v3h-8"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/>',
+  shield: '<path d="M12 2 20 5v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5z"/><path d="m8.5 12 2.5 2.5 4.5-5"/>',
+  cross: '<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/>',
+};
+---
+
+<div class:list={['marquee', { 'marquee--reverse': reverse }]}>
+  <div class="marquee__track">
+    {[0, 1].map((copy) => (
+      <ul class="marquee__group" aria-hidden={copy === 1 ? 'true' : undefined}>
+        {items.map((item) => (
+          <li class="marquee__item">
+            <span class="marquee__icon">
+              <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" set:html={icons[item.icon]} />
+            </span>
+            <span>{item.label}</span>
+          </li>
+        ))}
+      </ul>
+    ))}
+  </div>
+</div>
+
+<style>
+  .marquee {
+    overflow: hidden;
+    padding-block: 12px;
+    /* soft fade at both edges */
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee 50s linear infinite;
+  }
+  .marquee--reverse .marquee__track { animation-direction: reverse; }
+  .marquee:hover .marquee__track { animation-play-state: paused; }
+
+  .marquee__group { display: flex; list-style: none; margin: 0; padding: 0; }
+  .marquee__item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-inline: clamp(16px, 2.5vw, 28px);
+    white-space: nowrap;
+    font-size: clamp(1rem, 1.6vw, 1.2rem);
+    font-weight: 700;
+    font-style: italic;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+  }
+  .marquee__icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: clamp(52px, 7vw, 64px);
+    aspect-ratio: 1;
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--blue-ink);
+    box-shadow: var(--shadow);
+    animation: float 4s ease-in-out infinite;
+  }
+  .marquee__item:nth-child(even) .marquee__icon { color: var(--green-ink); animation-delay: -2s; }
+  .marquee__icon svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
+  }
+  @keyframes float {
+    50% { transform: translateY(-5px) rotate(-6deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee { mask-image: none; -webkit-mask-image: none; }
+    .marquee__track,
+    .marquee__icon { animation: none; }
+    .marquee__track { flex-wrap: wrap; justify-content: center; width: auto; }
+    .marquee__group { flex-wrap: wrap; justify-content: center; row-gap: 16px; }
+    .marquee__group[aria-hidden] { display: none; }
+  }
+</style>
