@@ -1,0 +1,73 @@
+---
+/**
+ * Click-to-load Google Map. The iframe (≈1 MB of third-party JS + cookies) is only
+ * injected after the visitor asks for it, keeping the contact page fast and private.
+ */
+import { site } from '../config/site';
+import { t, type Lang } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const i18n = t(lang).contactPage;
+const query = encodeURIComponent(site.contact.mapQuery);
+const embedSrc = `https://maps.google.com/maps?q=${query}&z=15&hl=${lang}&output=embed`;
+const mapsLink = `https://www.google.com/maps/search/?api=1&query=${query}`;
+---
+
+<div class="map" data-src={embedSrc} data-title={i18n.mapTitle}>
+  <div class="map__placeholder">
+    <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
+      <path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" />
+    </svg>
+    <p class="map__address">{site.contact.street}, {site.contact.postalCode} {site.contact.city}</p>
+    <div class="btn-row">
+      <button type="button" class="btn map__load">{i18n.mapLoad}</button>
+      <a href={mapsLink} class="btn btn--ghost" target="_blank" rel="noopener">{i18n.openMap}</a>
+    </div>
+    <p class="map__note">{i18n.mapNote}</p>
+  </div>
+</div>
+
+<style>
+  .map {
+    position: relative;
+    min-height: 420px;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--blue) 18%, transparent), transparent 55%),
+      radial-gradient(circle at 80% 90%, color-mix(in srgb, var(--green) 18%, transparent), transparent 55%),
+      var(--surface);
+  }
+  .map__placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px;
+    text-align: center;
+    color: var(--blue-ink);
+  }
+  .map__address { margin: 0; color: var(--text); font-weight: 600; }
+  .map__note { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
+  .map .btn-row { justify-content: center; }
+  .map :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.map').forEach((map) => {
+    map.querySelector('.map__load')?.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = map.dataset.src!;
+      iframe.title = map.dataset.title!;
+      iframe.referrerPolicy = 'no-referrer-when-downgrade';
+      iframe.allowFullscreen = true;
+      map.replaceChildren(iframe);
+    });
+  });
+</script>

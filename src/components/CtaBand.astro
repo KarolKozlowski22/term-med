@@ -1,0 +1,38 @@
+---
+// Gradient "get in touch" band used at the bottom of pages (echoes the original green-blue section).
+import { site } from '../config/site';
+import { t, type Lang } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const i18n = t(lang);
+const mailto = `mailto:${site.contact.salesEmail}?subject=${encodeURIComponent(i18n.mailSubject)}`;
+---
+
+<section class="section cta-wrap">
+  <div class="container">
+    <div class="cta center">
+      <h2>{i18n.cta.title}</h2>
+      <p>{i18n.cta.text}</p>
+      <div class="btn-row">
+        <a href={mailto} class="btn btn--white">{i18n.askOffer}</a>
+        <a href={`tel:${site.contact.phoneHref}`} class="btn btn--outline">{site.contact.phone}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-wrap { padding-block: clamp(32px, 5vw, 56px) 0; }
+  .cta {
+    padding: clamp(40px, 7vw, 80px) clamp(20px, 5vw, 64px);
+    border-radius: var(--radius);
+    background: linear-gradient(15deg, var(--green-ink), var(--blue-ink));
+    color: #fff;
+    box-shadow: var(--shadow-hover);
+  }
+  .cta h2 { font-style: italic; text-transform: uppercase; }
+  .cta p { max-width: 600px; margin: 0 auto 2rem; color: rgba(255, 255, 255, 0.92); }
+  .btn--outline { background: transparent; border-color: #fff; color: #fff; box-shadow: none; }
+  .btn--outline:hover { background: rgba(255, 255, 255, 0.12); }
+</style>

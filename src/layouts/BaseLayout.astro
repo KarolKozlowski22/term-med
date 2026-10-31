@@ -1,0 +1,117 @@
+---
+import '@fontsource-variable/montserrat/wght.css';
+import '@fontsource-variable/montserrat/wght-italic.css';
+import '../styles/global.css';
+import fontNormal from '@fontsource-variable/montserrat/files/montserrat-latin-wght-normal.woff2?url';
+import fontItalic from '@fontsource-variable/montserrat/files/montserrat-latin-wght-italic.woff2?url';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileCTA from '../components/MobileCTA.astro';
+import { site } from '../config/site';
+import { languages, routes, t, type Lang, type PageKey } from '../i18n/ui';
+import { absoluteUrl, url } from '../utils/url';
+
+interface Props {
+  lang: Lang;
+  /** Route key; enables hreflang alternates + language switcher. Omit for pages without a translation (404). */
+  page?: PageKey;
+  title?: string;
+  description?: string;
+  /** Extra JSON-LD objects for this page. */
+  schema?: Record<string, unknown>[];
+}
+
+const { lang, page, title, description, schema = [] } = Astro.props;
+const i18n = t(lang);
+const fullTitle = title ? `${title} | ${site.brand}` : `${site.brand} — ${i18n.tagline}`;
+const metaDescription = description ?? i18n.description;
+const canonical = page ? absoluteUrl(routes[page][lang], Astro.site) : undefined;
+const ogImage = absoluteUrl('/og-image.jpg', Astro.site);
+const altLangs = Object.keys(languages).filter((l) => l !== lang) as Lang[];
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${absoluteUrl('/', Astro.site)}#organization`,
+  name: site.brand,
+  legalName: site.legalName,
+  url: absoluteUrl('/', Astro.site),
+  logo: absoluteUrl('/icon-512.png', Astro.site),
+  image: ogImage,
+  description: i18n.description,
+  foundingDate: String(site.founded),
+  email: site.contact.infoEmail,
+  telephone: site.contact.phoneHref,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.contact.street.replace(/^ul\.\s*/, ''),
+    postalCode: site.contact.postalCode,
+    addressLocality: site.contact.city,
+    addressCountry: site.contact.country,
+  },
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      contactType: 'sales',
+      email: site.contact.salesEmail,
+      telephone: site.contact.phoneHref,
+      availableLanguage: ['pl', 'en'],
+    },
+  ],
+};
+const jsonLd = [organization, ...schema];
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={metaDescription} />
+    <meta name="author" content={site.author} />
+    <meta name="robots" content={site.indexable ? 'index, follow, max-image-preview:large' : 'noindex, nofollow'} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {page && (
+      <>
+        {Object.keys(languages).map((l) => (
+          <link rel="alternate" hreflang={l} href={absoluteUrl(routes[page][l as Lang], Astro.site)} />
+        ))}
+        <link rel="alternate" hreflang="x-default" href={absoluteUrl(routes[page].pl, Astro.site)} />
+      </>
+    )}
+
+    <!-- Fonts are self-hosted; preload the Latin subsets used above the fold. -->
+    <link rel="preload" href={fontNormal} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={fontItalic} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.brand} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={metaDescription} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={i18n.locale} />
+    {altLangs.map((l) => <meta property="og:locale:alternate" content={t(l).locale} />)}
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="theme-color" content="#51a5db" />
+    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
+    <link rel="manifest" href={url('/site.webmanifest')} />
+    <link rel="sitemap" href={url('/sitemap-index.xml')} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">{i18n.skip}</a>
+    <Header lang={lang} page={page} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <MobileCTA lang={lang} />
+  </body>
+</html>

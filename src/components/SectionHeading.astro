@@ -1,0 +1,24 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  center?: boolean;
+  /** Heading level — use 1 for the page's main heading. */
+  level?: 1 | 2;
+}
+const { eyebrow, title, center = true, level = 2 } = Astro.props;
+const Tag = `h${level}` as 'h1' | 'h2';
+---
+
+<div class:list={['sh', { center }]}>
+  {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+  <Tag class="title-grad">{title}</Tag>
+  <slot />
+</div>
+
+<style>
+  .sh { margin-bottom: clamp(32px, 5vw, 56px); }
+  .sh.center { max-width: 720px; margin-inline: auto; }
+  .sh :global(p) { color: var(--text-muted); font-size: 1.05rem; }
+  .sh > :is(h1, h2) { display: block; }
+</style>

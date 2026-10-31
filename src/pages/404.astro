@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { routes, t } from '../i18n/ui';
+import { url } from '../utils/url';
+
+const pl = t('pl').notFound;
+const en = t('en').notFound;
+---
+
+<BaseLayout lang="pl" title={pl.title}>
+  <section class="section">
+    <div class="container center narrow">
+      <span class="eyebrow">404</span>
+      <h1 class="title-grad">{pl.title}</h1>
+      <p class="muted">{pl.text}</p>
+      <p class="muted" lang="en">{en.text}</p>
+      <div class="btn-row">
+        <a href={url(routes.home.pl)} class="btn">{t('pl').back}</a>
+        <a href={url(routes.home.en)} class="btn btn--ghost" lang="en">{t('en').back}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

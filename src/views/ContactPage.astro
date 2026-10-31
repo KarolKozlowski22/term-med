@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import MapEmbed from '../components/MapEmbed.astro';
+import { site } from '../config/site';
+import { routes, t, type Lang } from '../i18n/ui';
+import { absoluteUrl } from '../utils/url';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const i18n = t(lang);
+const page = i18n.contactPage;
+const { contact } = site;
+const mailto = (email: string) => `mailto:${email}?subject=${encodeURIComponent(i18n.mailSubject)}`;
+
+const breadcrumbs = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: i18n.nav.home, item: absoluteUrl(routes.home[lang], Astro.site) },
+    { '@type': 'ListItem', position: 2, name: i18n.nav.contact, item: absoluteUrl(routes.contact[lang], Astro.site) },
+  ],
+};
+---
+
+<BaseLayout lang={lang} page="contact" title={page.title} description={page.metaDescription} schema={[breadcrumbs]}>
+  <section class="section contact-page">
+    <div class="container">
+      <SectionHeading eyebrow={site.brand} title={page.title} level={1}>
+        <p>{page.lead}</p>
+      </SectionHeading>
+
+      <div class="grid grid--2 contact">
+        <div class="card contact__list">
+          <div class="contact__item">
+            <span class="eyebrow">{page.phone}</span>
+            <a href={`tel:${contact.phoneHref}`} class="contact__big">{contact.phone}</a>
+          </div>
+          <div class="contact__item">
+            <span class="eyebrow">{page.sales}</span>
+            <a href={mailto(contact.salesEmail)} class="contact__big">{contact.salesEmail}</a>
+          </div>
+          <div class="contact__item">
+            <span class="eyebrow">{page.info}</span>
+            <a href={mailto(contact.infoEmail)} class="contact__big">{contact.infoEmail}</a>
+          </div>
+          <div class="contact__item">
+            <span class="eyebrow">{page.address}</span>
+            <address>
+              {site.legalName}<br />
+              {contact.street}<br />
+              {contact.postalCode} {contact.city}, {page.country}
+            </address>
+          </div>
+        </div>
+
+        <MapEmbed lang={lang} />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact-page { padding-top: clamp(24px, 4vw, 48px); }
+  .contact { align-items: stretch; }
+  .contact__list { display: grid; gap: 28px; align-content: start; }
+  .contact__item .eyebrow { display: block; margin-bottom: 0.25rem; }
+  .contact__item address { font-style: normal; }
+  .contact__big {
+    font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+    font-weight: 600;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    transition: color 0.2s;
+  }
+  .contact__big:hover { color: var(--blue-ink); }
+</style>

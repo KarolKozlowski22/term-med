@@ -1,0 +1,53 @@
+---
+// Links to the same page in the other language (falls back to its home page).
+import { languages, routes, t, type Lang, type PageKey } from '../i18n/ui';
+import { url } from '../utils/url';
+
+interface Props {
+  lang: Lang;
+  page?: PageKey;
+}
+const { lang, page = 'home' } = Astro.props;
+---
+
+<ul class="lang" aria-label="Language">
+  {(Object.keys(languages) as Lang[]).map((l) => (
+    <li>
+      {l === lang ? (
+        <span aria-current="true">{l.toUpperCase()}</span>
+      ) : (
+        <a href={url(routes[page][l])} hreflang={l} lang={l} title={t(lang).switchLang}>
+          {l.toUpperCase()}
+        </a>
+      )}
+    </li>
+  ))}
+</ul>
+
+<style>
+  .lang {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  .lang > li > * {
+    display: grid;
+    place-items: center;
+    min-width: 40px;
+    height: 32px;
+    border-radius: 999px;
+    text-decoration: none;
+  }
+  .lang span { background: var(--grad-ink); color: #fff; }
+  .lang a:hover { color: var(--blue-ink); }
+  @media (max-width: 860px) {
+    .lang { align-self: flex-end; font-size: 1rem; }
+    .lang > li > * { min-width: 56px; height: 40px; }
+  }
+</style>

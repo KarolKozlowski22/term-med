@@ -1,0 +1,64 @@
+---
+import { Picture } from 'astro:assets';
+import type { Product } from '../config/site';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  product: Product;
+  lang: Lang;
+  /** Load eagerly (first row above the fold). */
+  eager?: boolean;
+}
+const { product, lang, eager = false } = Astro.props;
+---
+
+<article class="product" id={product.id}>
+  <div class="product__media">
+    <Picture
+      src={product.image}
+      alt={product.name[lang]}
+      formats={['avif', 'webp']}
+      widths={[280, 420, 560, 840]}
+      sizes="(max-width: 700px) 92vw, (max-width: 1100px) 45vw, 360px"
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+    />
+  </div>
+  <div class="product__body">
+    <h3>{product.name[lang]}</h3>
+    <p>{product.description[lang]}</p>
+  </div>
+</article>
+
+<style>
+  .product {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .product:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+  .product__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: #fff;
+  }
+  .product__media :global(picture) { position: absolute; inset: 20px; }
+  .product__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .product__body {
+    flex: 1;
+    padding: 20px 24px 24px;
+    border-top: 3px solid var(--blue);
+  }
+  .product__body h3 { font-style: italic; font-weight: 600; margin-bottom: 0.4em; }
+  .product__body p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+</style>
